@@ -7,58 +7,52 @@ contract Metacoin is IERC20 {
   string public  name;
   uint8 public decimals;
   
-    uint public _totalSupply;
-    mapping (address => uint256) private _balances;
-    mapping (address => mapping (address => uint256)) private _allowed;
+  uint public totalSupply;
+  mapping (address => uint256) private balances;
+  mapping (address => mapping (address => uint256)) private allowed; // A approves B to spend C tokens 
 
-
-  constructor() {
+  constructor(uint _initialSupply) {
     name = "Metacoun";
     symbol = "MTC";
     decimals = 8;
-    _totalSupply = 1000000;
+    totalSupply = _initialSupply;
+
+    balances[msg.sender] = _initialSupply;
   }
 
-  function totalSupply() public view returns (uint256) {
-    return _totalSupply;
+  function balanceOf(address _owner) public view returns (uint256 balance) {
+    return balances[_owner];
   }
 
-  function balanceOf(address owner) public view returns (uint256 balance) {
-    return _balances[owner];
-  }
+  function transfer(address _to, uint256 _value) public returns (bool success) {
+    require(balances[msg.sender] >= _value);
 
-  function transfer(address to, uint256 value) public returns (bool success) {
-    require(_balances[msg.sender] >= value);
-    require(to != address(0));
-
-    _balances[msg.sender] = _balances[msg.sender] - value;
-    _balances[to] = _balances[to] + value;
-    emit Transfer(msg.sender, to, value);
+    balances[msg.sender] -= _value;
+    balances[_to] += _value;
+    emit Transfer(msg.sender, _to, _value);
     return true;
   }
 
-  function transferFrom(address from, address to, uint256 value) public returns (bool) {
-    require(_balances[from] >= value);
-    require(value <= _allowed[from][msg.sender]);
-    require(to != address(0));
+  function transferFrom(address _from, address _to, uint256 _value) public returns (bool) {
+    require(balances[_from] >= _value);
+    require(_value <= allowed[_from][msg.sender]);
 
-    _balances[from] = _balances[from] - value;
-    _balances[to] = _balances[to] + value;
-    _allowed[from][msg.sender] = _allowed[from][msg.sender] - value;
-    emit Transfer(from, to, value);
+    balances[_from] -= _value;
+    balances[_to] += _value;
+    allowed[_from][msg.sender] -= _value;
+    emit Transfer(_from, _to, _value);
     return true;
   }
 
   // Approve the passed address to spend the specified amount of tokens on behalf of msg.sender.
-  function approve(address spender, uint256 value) public returns (bool) {
-    require(spender != address(0));
-
-    _allowed[msg.sender][spender] = value;
-    emit Approval(msg.sender, spender, value);
+  // I am approving _spender to spend _value amount of tokens
+  function approve(address _spender, uint256 _value) public returns (bool) {
+    allowed[msg.sender][_spender] = _value; // msg.sender allowe _spender to spend _value tokens from his account 
+    emit Approval(msg.sender, _spender, _value);
     return true;
   }
 
-  function allowance(address owner, address spender) public view returns (uint256) {
-    return _allowed[owner][spender];
+  function allowance(address _owner, address _spender) public view returns (uint256) {
+    return allowed[_owner][_spender];
   }
 }

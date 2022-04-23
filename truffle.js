@@ -1,3 +1,7 @@
+require("ts-node").register({
+  files: true,
+});
+
 module.export = {
   networks: {
     development: {
