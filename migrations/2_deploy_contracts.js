@@ -1,5 +1,1 @@
-const Metacoin = artifacts.require("Metacoin");
-
-module.exports = function(deployer) {
-  deployer.deploy(Metacoin, 1000000);
-};
+module.exports = require("./deploy_contracts")(artifacts, web3);

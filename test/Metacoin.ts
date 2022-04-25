@@ -1,8 +1,7 @@
+import { metacoinConfig } from "../config";
 import { MetacoinInstance } from '../types/truffle-contracts';
 
 const Metacoin = artifacts.require("Metacoin");
-const TOTAL_SUPPLY = 1000000
-
 contract('Metacoin', (accounts: string[]) => {
   let tokenInstance: MetacoinInstance
 
@@ -12,17 +11,17 @@ contract('Metacoin', (accounts: string[]) => {
   
   it('sets the total supply upon deployment', async () => {
     const totalSupply = await tokenInstance.totalSupply();
-    assert.equal(totalSupply.toNumber(), TOTAL_SUPPLY, 'sets the total supply to 1,000,000');
+    assert.equal(totalSupply.toNumber(), metacoinConfig.totalSupply, 'sets the total supply to 1,000,000');
   });
 
   it('sets total supply to contract creator address', async () => {
     const creatorBalance = await tokenInstance.balanceOf(accounts[0]);
-    assert.equal(creatorBalance.toNumber(), TOTAL_SUPPLY);
+    assert.equal(creatorBalance.toNumber(), metacoinConfig.totalSupply);
   });
 
   it('transfer throws, if sender have no enough balance', async () => {
     try {
-      await tokenInstance.transfer.call(accounts[1], TOTAL_SUPPLY + 1, { from: accounts[0] });
+      await tokenInstance.transfer.call(accounts[1], metacoinConfig.totalSupply + 1, { from: accounts[0] });
       assert.ok(false);
     } catch (error) {
       assert.ok(true)
