@@ -5,6 +5,7 @@ import "./ERC20.sol";
 contract Metacoin is IERC20 {
   string public symbol;
   string public  name;
+  string public standard;
   uint8 public decimals;
   
   uint public totalSupply;
@@ -16,6 +17,7 @@ contract Metacoin is IERC20 {
     symbol = "MTC";
     decimals = 8;
     totalSupply = _initialSupply;
+    standard = "Metacoin v1.0.0";
 
     balances[msg.sender] = _initialSupply;
   }
