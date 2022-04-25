@@ -38,4 +38,15 @@ contract MetacoinSale {
     // trigger Sell Event
     emit Sell(msg.sender, _amount);
   }
+
+  function endSale() public restricted {
+    // transfer remained tokens to admin
+    require(tokenContract.transfer(admin, tokenContract.balanceOf(address(this))));
+    selfdestruct(payable(admin));
+  }
+
+  modifier restricted {
+    require(msg.sender == admin);
+    _;
+  }
 }

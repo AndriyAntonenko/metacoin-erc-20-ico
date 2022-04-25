@@ -77,4 +77,30 @@ contract("MetacoinSale", (accounts: string[]) => {
     assert.equal(txResponse.logs[0].args._buyer, buyer);
     assert.equal(txResponse.logs[0].args._amount.toNumber(), amount);
   });
+
+
+  it("cannot ends token sale, from account other than admin", async () => {
+    try {
+      await tokenSaleInstance.endSale({ from: buyer });
+      assert.ok(false);
+    } catch (_) {
+      assert.ok(true);
+    }
+  });
+
+  it("ends token sale after request from admin account", async () => {
+    const tokensRemains = await tokenInstance.balanceOf(tokenSaleInstance.address);
+    const adminBalance = await tokenInstance.balanceOf(admin);
+    await tokenSaleInstance.endSale({ from: admin });
+
+    const updatedAdminBalance = await tokenInstance.balanceOf(admin);
+    assert.equal(updatedAdminBalance.toNumber(), adminBalance.add(tokensRemains).toNumber());
+
+    try {
+      await tokenSaleInstance.tokenPrice();
+      assert.ok(false);
+    } catch (_) {
+      assert.ok(true);
+    }
+  });
 });
