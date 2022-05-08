@@ -9,3 +9,6 @@ types
 # buidler
 artifacts
 cache
+
+# env
+.env

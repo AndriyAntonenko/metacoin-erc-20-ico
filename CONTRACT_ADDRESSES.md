@@ -1,0 +1,4 @@
+## Rinkeby
+
+- **Metacoin**: 0x7220a3B3f1C1Aacb7F4e329B1faEa606Ac49AC78
+- **MetacoinSale**: 0xE54ffa81A993B94C8073857d58e25CC5BEEc57C9
